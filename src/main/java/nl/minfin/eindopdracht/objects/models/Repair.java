@@ -34,11 +34,9 @@ public class Repair {
     private @Column String problemsFound;
     private @Column java.sql.Date repairDate;
     private @Column Boolean customerAgreed;
-    private @Column Date pickupDate;
     private @Column String tasksPerformed;
     private @Column double miscellaneousTaskPrice;
     private @Column RepairStatus completed;
-    private @Column Boolean called;
     private @Column Boolean paid;
 
     public Repair(Customer customer, java.sql.Date bringDate) {
@@ -46,23 +44,22 @@ public class Repair {
         this.bringDate = bringDate;
         this.customerAgreed = null;
         this.completed = RepairStatus.UNCOMPLETED;
-        this.called = false;
         this.paid = false;
     }
 
     public void setPerformedTasks(List<Integer> tasksPerformed) {
         if (tasksPerformed != null) {
-            String tasks = "";
+            StringBuilder tasks = new StringBuilder();
 
             for (int i = 0; i < tasksPerformed.size(); i++) {
-                tasks += tasksPerformed.get(i);
+                tasks.append(tasksPerformed.get(i));
 
                 if (i != tasksPerformed.size() - 1) {
-                    tasks += ", ";
+                    tasks.append(", ");
                 }
             }
 
-            this.tasksPerformed = tasks;
+            this.tasksPerformed = tasks.toString();
         }
     }
 

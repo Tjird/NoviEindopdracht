@@ -143,7 +143,6 @@ public class RepairService {
         repair.get().setCustomerAgreed(false);
         repair.get().setCompleted(RepairStatus.CANCELED);
         repair.get().setPrice(45.00);
-        repair.get().setPickupDate(new Date(System.currentTimeMillis()));
         return repairRepository.save(repair.get());
     }
 
@@ -151,28 +150,28 @@ public class RepairService {
         Optional<Repair> repair = repairRepository.findById(repairId);
         double tax = 0.21;
         double total = 45.00;
-        String receipt = "";
+        StringBuilder receipt = new StringBuilder();
 
         if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
 
-        receipt += "Klantnummer: " + repair.get().getCustomer().getCustomerId();
-        receipt += "Kenteken: " + repair.get().getCustomer().getLicensePlate();
-        receipt += "Taken uitgevoerd: \n";
-        receipt += "\nKeuring   €" + total;
+        receipt.append("Klantnummer: ").append(repair.get().getCustomer().getCustomerId());
+        receipt.append("Kenteken: ").append(repair.get().getCustomer().getLicensePlate());
+        receipt.append("Taken uitgevoerd: \n");
+        receipt.append("\nKeuring   €").append(total);
 
         if (repair.get().getCompleted() != RepairStatus.CANCELED && repair.get().getCustomerAgreed()) {
             for (Integer id : repair.get().getPerformedTasks()) {
                 InventoryItem inventoryItem = inventoryItemRepository.findInventoryItemByInventoryItemId(id);
 
-                receipt += "\n" + inventoryItem.getName() + "   €" + inventoryItem.getCost();
+                receipt.append("\n").append(inventoryItem.getName()).append("   €").append(inventoryItem.getCost());
                 total += inventoryItem.getCost();
             }
         }
 
-        receipt += "\n\n=-=-=-=-=-=-=-=-=-=\n\n";
-        receipt += "Totaal exc: €" + total + " | Totaal inc: €" + (total + (total*tax));
+        receipt.append("\n\n=-=-=-=-=-=-=-=-=-=\n\n");
+        receipt.append("Totaal exc: €").append(total).append(" | Totaal inc: €").append(total + (total * tax));
 
-        return receipt;
+        return receipt.toString();
 
     }
 
