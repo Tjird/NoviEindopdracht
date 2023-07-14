@@ -1,5 +1,7 @@
 package nl.minfin.eindopdracht.controllers;
 
+import nl.minfin.eindopdracht.dto.CustomerDto;
+import nl.minfin.eindopdracht.dto.CustomerIdDto;
 import nl.minfin.eindopdracht.dto.CustomerNameDto;
 import nl.minfin.eindopdracht.objects.models.Customer;
 import nl.minfin.eindopdracht.services.CustomerService;
@@ -22,11 +24,11 @@ public class CustomerController {
     }
 
     @PostMapping()
-    Customer createCustomer(@RequestBody Customer newCustomer) {
+    Customer createCustomer(@RequestBody CustomerDto newCustomer) {
         return customerService.createCustomer(newCustomer);
     }
 
     @GetMapping
-    Customer getCustomerById(@RequestBody Customer customer) { return customerService.getCustomerById(customer.getCustomerId()); }
+    Customer getCustomerById(@RequestBody CustomerIdDto customer) { return customerService.getCustomerById(customer.customerId); }
 
 }

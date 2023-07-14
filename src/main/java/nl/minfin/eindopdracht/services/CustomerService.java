@@ -1,5 +1,8 @@
 package nl.minfin.eindopdracht.services;
 
+import nl.minfin.eindopdracht.dto.CustomerDto;
+import nl.minfin.eindopdracht.objects.exceptions.CustomerExistsException;
+import nl.minfin.eindopdracht.objects.exceptions.IncorrectSyntaxException;
 import nl.minfin.eindopdracht.objects.models.Customer;
 import nl.minfin.eindopdracht.objects.exceptions.CustomerNotExistsException;
 import nl.minfin.eindopdracht.repositories.CustomerRepository;
@@ -8,37 +11,35 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/*
- * This service will handle all the functionality that is being requested through CustomerController and interact with
- * the database accordingly.
- */
 @Service
 public class CustomerService {
-    @Autowired
-    private CustomerRepository customerRepository;
+
+    private @Autowired CustomerRepository customerRepository;
 
     // Returns all customers.
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 
-    /*
-     * Returns a customer by id.
-     *
-     * Will throw exception if the customer id doesnt exist.
-     */
     public Customer getCustomerById(Long customerId) {
         return customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotExistsException(customerId));
     }
 
-    // Returns a list of customers by name.
     public List<Customer> getCustomersByName(String name) {
         return customerRepository.findCustomersByName(name);
     }
 
-    // Creates a new customer in the database.
-    public Customer createCustomer(Customer newCustomer) {
-        return customerRepository.save(newCustomer);
+    // Creeer een nieuwe klant in het systeem
+    public Customer createCustomer(CustomerDto newCustomer) {
+        if (newCustomer.customerName == null || newCustomer.telephoneNumber == null || newCustomer.licensePlate ==  null) throw new IncorrectSyntaxException("NewCustomer");
+
+        List<Customer> licensePlateList = customerRepository.findCustomersByLicensePlate(newCustomer.licensePlate);
+        List<Customer> telephoneList = customerRepository.findCustomersByTelephoneNumber(newCustomer.telephoneNumber);
+
+        if (licensePlateList.size() > 0) throw new CustomerExistsException("license_plate", licensePlateList.get(0).getLicensePlate());
+        else if (telephoneList.size() > 0) throw new CustomerExistsException("telephone_number", telephoneList.get(0).getTelephoneNumber());
+
+        return customerRepository.save(new Customer(newCustomer.customerName, newCustomer.telephoneNumber, newCustomer.licensePlate));
     }
 
     /*
