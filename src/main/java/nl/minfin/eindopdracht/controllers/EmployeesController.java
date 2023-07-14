@@ -15,6 +15,7 @@ public class EmployeesController {
 
     private @Autowired EmployeesService employeesService;
 
+    // Endpoint om alle medewerkers weer te geven, deze is beveiligd voor alleen de ADMIN role
     @GetMapping()
     List<Employee> getAllEmployees() { return employeesService.getListOfEmployees(); }
 

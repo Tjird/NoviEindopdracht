@@ -16,15 +16,12 @@ public class CustomerService {
 
     private @Autowired CustomerRepository customerRepository;
 
-    // Returns all customers.
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
-    }
-
+    // Verkrijg een klant op basis van het Id
     public Customer getCustomerById(Long customerId) {
         return customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotExistsException(customerId));
     }
 
+    // Verkrijg een lijst met klanten op basis van de naam
     public List<Customer> getCustomersByName(String name) {
         return customerRepository.findCustomersByName(name);
     }
@@ -42,39 +39,4 @@ public class CustomerService {
         return customerRepository.save(new Customer(newCustomer.customerName, newCustomer.telephoneNumber, newCustomer.licensePlate));
     }
 
-    /*
-     * Updates the details of a customer in the database.
-     *
-     * Will throw exception if the customer id doesnt exist.
-     */
-    public Customer updateCustomer(Customer newCustomer, Long customerId) {
-        return customerRepository.findById(customerId)
-                .map(customer -> {
-                    if (newCustomer.getName() != null) {
-                        customer.setName(newCustomer.getName());
-                    }
-                    if (newCustomer.getLicensePlate() != null) {
-                        customer.setLicensePlate(newCustomer.getLicensePlate());
-                    }
-                    if (newCustomer.getTelephoneNumber() != null) {
-                        customer.setTelephoneNumber(newCustomer.getTelephoneNumber());
-                    }
-
-                    return customerRepository.save(customer);
-                })
-                .orElseThrow(() -> new CustomerNotExistsException(customerId));
-    }
-
-    /*
-     * Deletes a customer from the database.
-     *
-     * Will throw exception if the customer id doesnt exist.
-     */
-    public void deleteCustomer(Long customerId) {
-        if (customerRepository.findById(customerId).isPresent()) {
-            customerRepository.deleteById(customerId);
-        } else {
-            throw new CustomerNotExistsException(customerId);
-        }
-    }
 }

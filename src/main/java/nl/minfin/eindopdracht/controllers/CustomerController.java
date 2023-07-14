@@ -17,17 +17,20 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    // Endpoint om klanten te vinden op naam, dit returnt een lijst met klanten
     @GetMapping("/name")
     List<Customer> getCustomersByName(@RequestBody CustomerNameDto name) {
 
         return customerService.getCustomersByName(name.fullName);
     }
 
+    // Endpoint om een nieuwe klant aan te maken
     @PostMapping()
     Customer createCustomer(@RequestBody CustomerDto newCustomer) {
         return customerService.createCustomer(newCustomer);
     }
 
+    // Endpoint om een gebruiker terug te krijgen op basis van zijn/haar Id
     @GetMapping
     Customer getCustomerById(@RequestBody CustomerIdDto customer) { return customerService.getCustomerById(customer.customerId); }
 
