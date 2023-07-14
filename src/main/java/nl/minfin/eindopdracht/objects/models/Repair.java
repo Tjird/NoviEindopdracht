@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.minfin.eindopdracht.objects.enums.RepairStatus;
-import nl.minfin.eindopdracht.objects.models.Customer;
-import nl.minfin.eindopdracht.objects.models.File;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -20,53 +18,28 @@ import java.util.List;
 @Entity
 @Table(name = "repairs")
 public class Repair {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long repairId;
 
-    @ManyToOne
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long repairId;
+    private @ManyToOne
     @JoinColumn(
             name = "customerId",
-            referencedColumnName = "customerId")
-    private Customer customer;
-
-    @OneToOne
-    @JoinColumn(
+            referencedColumnName = "customerId"
+    ) Customer customer;
+    private @OneToOne @JoinColumn(
             name = "fileId",
             referencedColumnName = "fileId"
-    )
-    private File file;
-
-    @Column
-    private java.sql.Date bringDate;
-
+    ) File file;
+    private @Column java.sql.Date bringDate;
     private @Column double price;
-
-    @Column
-    private String problemsFound;
-
-    @Column
-    private java.sql.Date repairDate;
-
-    @Column
-    private Boolean customerAgreed;
-
+    private @Column String problemsFound;
+    private @Column java.sql.Date repairDate;
+    private @Column Boolean customerAgreed;
     private @Column Date pickupDate;
-
-    @Column
-    private String partsUsed;
-
-    @Column
-    private double otherActionsPrice;
-
-    @Column
-    private RepairStatus completed;
-
-    @Column
-    private Boolean called;
-
-    @Column
-    private Boolean paid;
+    private @Column String partsUsed;
+    private @Column double otherActionsPrice;
+    private @Column RepairStatus completed;
+    private @Column Boolean called;
+    private @Column Boolean paid;
 
     public Repair(Customer customer, java.sql.Date bringDate) {
         this.customer = customer;

@@ -16,8 +16,8 @@ public class EmployeesDetails implements UserDetails {
     public EmployeesDetails(Employee employee) {
         this.employee = employee;
     }
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+    public @Override Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         authorities.add(new SimpleGrantedAuthority(employee.getRole().name()));
@@ -25,33 +25,23 @@ public class EmployeesDetails implements UserDetails {
         return authorities;
     }
 
-    @Override
-    public String getPassword() {
+
+    public @Override String getPassword() {
         return employee.getPassword();
     }
-
-    @Override
-    public String getUsername() {
+    public @Override String getUsername() {
         return employee.getUsername();
     }
-
-    @Override
-    public boolean isAccountNonExpired() {
+    public @Override boolean isAccountNonExpired() {
         return true;
     }
-
-    @Override
-    public boolean isAccountNonLocked() {
+    public @Override boolean isAccountNonLocked() {
         return true;
     }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
+    public @Override boolean isCredentialsNonExpired() {
         return true;
     }
-
-    @Override
-    public boolean isEnabled() {
+    public @Override boolean isEnabled() {
         return true;
     }
 }

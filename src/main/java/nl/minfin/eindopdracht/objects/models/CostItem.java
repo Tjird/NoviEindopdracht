@@ -7,10 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.minfin.eindopdracht.objects.enums.CostType;
 
-/*
- * Parts and actions are combined into CostItems so they can be stored in the same table.
- * Then only a list of ids need to be provided to get the price.
- */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -18,21 +14,12 @@ import nl.minfin.eindopdracht.objects.enums.CostType;
 @Entity
 @Table(name = "costitems")
 public class CostItem implements Comparable<CostItem> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long costItemId;
 
-    @Column
-    private String name;
-
-    @Column
-    private double cost;
-
-    @Column
-    private int stock;
-
-    @Column
-    private CostType costType;
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long costItemId;
+    private @Column String name;
+    private @Column double cost;
+    private @Column int stock;
+    private @Column CostType costType;
 
     public CostItem(String name, double cost, CostType costType) {
         this.name = name;

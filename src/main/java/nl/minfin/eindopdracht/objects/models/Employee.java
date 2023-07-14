@@ -14,8 +14,7 @@ import nl.minfin.eindopdracht.objects.enums.Role;
 @Entity
 @Table(name = "employees")
 public class Employee {
-    private @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) Long employeeId;
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long employeeId;
     private @Column(nullable = false, unique = true) String username;
     private @Column String password;
     private @Column String fullName;

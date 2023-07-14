@@ -18,8 +18,7 @@ import java.io.FileNotFoundException;
 @RequestMapping("/api/repairs")
 public class RepairController {
 
-    @Autowired
-    private RepairService repairService;
+    private @Autowired RepairService repairService;
 
     @PostMapping
     Repair createRepair(@RequestBody BringMomentDto bringMoment) { return repairService.createRepair(bringMoment); }

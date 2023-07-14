@@ -27,19 +27,12 @@ import java.util.Optional;
 
 @Service
 public class RepairService {
-    @Autowired
-    private RepairRepository repairRepository;
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private @Autowired RepairRepository repairRepository;
+    private @Autowired CustomerRepository customerRepository;
+    private @Autowired CostItemRepository costItemRepository;
+    private @Autowired FileRepository fileRepository;
 
-    @Autowired
-    private CostItemRepository costItemRepository;
-
-    @Autowired
-    private FileRepository fileRepository;
-
-    // Returns all repairs.
     public List<Repair> getAllRepairs() {
         return repairRepository.findAll();
     }
@@ -47,7 +40,7 @@ public class RepairService {
     public Repair createRepair(BringMomentDto bringMoment) {
         Optional<Customer> customer = customerRepository.findById(bringMoment.customerId);
 
-        if (customer.isEmpty()) throw new CustomerNotFoundException(bringMoment.customerId);
+        if (customer.isEmpty()) throw new CustomerNotExistsException(bringMoment.customerId);
 
         Repair repair = new Repair(customerRepository.findById(bringMoment.customerId).get(),
                 bringMoment.bringDate);
@@ -135,7 +128,7 @@ public class RepairService {
         if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
         if (repairDate == null) throw new IncorrectSyntaxException("repairDate");
         if (repair.get().getProblemsFound() == null) throw new PreviousStepUncompletedException("set found problems");
-        if (!repair.get().getCustomerAgreed()) throw new CustomerDisagreedException();
+        if (!repair.get().getCustomerAgreed()) throw new CustomerNotAgreedException();
 
         repair.get().setCustomerAgreed(true);
         repair.get().setRepairDate(repairDate);

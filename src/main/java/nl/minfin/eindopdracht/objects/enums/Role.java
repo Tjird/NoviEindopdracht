@@ -3,10 +3,11 @@ package nl.minfin.eindopdracht.objects.enums;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Role implements GrantedAuthority {
+
+    ADMIN(Roles.ADMIN),
     BACKOFFICE(Roles.BACKOFFICE),
-    MECHANIC(Roles.MECHANIC),
     CASHIER(Roles.CASHIER),
-    ADMIN(Roles.ADMIN);
+    MECHANIC(Roles.MECHANIC);
 
     private final String authority;
 
@@ -14,8 +15,8 @@ public enum Role implements GrantedAuthority {
         this.authority = authority;
     }
 
-    @Override
-    public String getAuthority() {
+    public @Override String getAuthority() {
         return this.authority;
     }
+
 }

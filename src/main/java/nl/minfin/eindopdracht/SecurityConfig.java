@@ -29,8 +29,7 @@ public class SecurityConfig {
         this.employeesRepository = employeesRepos;
     }
 
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder encoder, UserDetailsService udService) throws Exception {
+    public @Bean AuthenticationManager authManager(HttpSecurity http, PasswordEncoder encoder, UserDetailsService udService) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(udService)
                 .passwordEncoder(encoder)
@@ -38,18 +37,15 @@ public class SecurityConfig {
                 .build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
+    public @Bean UserDetailsService userDetailsService() {
         return new EmployeesDetailsService(this.employeesRepository);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
+    public @Bean PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public @Bean SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable()
                 .authorizeHttpRequests()

@@ -37,7 +37,7 @@ public class LoadDatabase {
                     String username = role.name().toLowerCase();
                     String password = passwordEncoder.encode(username);
                     String fullName = username.substring(0,1).toUpperCase() + username.substring(1) + " " + (username.substring(0,1).toUpperCase() + username.substring(1));
-                    log.info("Saving into the database, " + repository.save(new Employee(username, password, fullName, role)));
+                    log.info("Nieuwe medewerker aan het opslaan in de database, " + repository.save(new Employee(username, password, fullName, role)));
                 }
             }
         };

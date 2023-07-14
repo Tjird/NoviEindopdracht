@@ -11,11 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class EmployeesService {
 
-    @Autowired
-    private EmployeesRepository employeeRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private @Autowired EmployeesRepository employeeRepository;
+    private @Autowired BCryptPasswordEncoder passwordEncoder;
 
     public Employee updateEmployee(Long employeeId, Employee newEmployee) {
         if (employeeRepository.findByUsername(newEmployee.getUsername()) != null) {

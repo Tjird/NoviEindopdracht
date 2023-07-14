@@ -17,22 +17,12 @@ import java.util.Set;
 @Entity
 @Table(name = "customers")
 public class Customer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private Set<Repair> repairs = new HashSet<>();
-
-    @Column
-    private String name;
-
-    @Column
-    private String telephoneNumber;
-
-    @Column
-    private String licensePlate;
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long customerId;
+    private @JsonIgnore @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL) Set<Repair> repairs = new HashSet<>();
+    private @Column String name;
+    private @Column String telephoneNumber;
+    private @Column String licensePlate;
 
     public Customer(String name, String telephoneNumber, String licensePlate) {
         this.name = name;

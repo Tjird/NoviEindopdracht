@@ -16,16 +16,17 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
+
         private final static String SECRET_KEY = "AGrgeg9reg#$7egnie#$Tgeifn@34t56h";
 
         private Key getSigningKey() {
             byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
             return Keys.hmacShaKeyFor(keyBytes);
         }
+
         public String extractUsername(String token) {
             return extractClaim(token, Claims::getSubject);
         }
-
         private Date extractExpiration(String token) {
             return extractClaim(token, Claims::getExpiration);
         }
@@ -48,6 +49,7 @@ public class JwtService {
             Map<String, Object> claims = new HashMap<>();
             return createToken(claims, userDetails.getUsername());
         }
+
         private String createToken(Map<String, Object> claims, String
                 subject) {
             long validPeriod = 1000 * 60 * 60 * 24;
@@ -67,4 +69,5 @@ public class JwtService {
             return username.equals(userDetails.getUsername()) &&
                     !isTokenExpired(token);
         }
+
 }

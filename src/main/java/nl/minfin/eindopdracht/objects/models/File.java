@@ -14,17 +14,10 @@ import lombok.Setter;
 @Entity
 @Table(name = "files")
 public class File {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long fileId;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "file", orphanRemoval = true)
-    private Repair repair;
-
-    @Lob
-    private byte[] content;
-
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long fileId;
+    private @JsonIgnore @OneToOne(mappedBy = "file", orphanRemoval = true) Repair repair;
+    private @Lob byte[] content;
     private String name;
 
     public File(byte[] content, String name) {

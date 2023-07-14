@@ -20,7 +20,6 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
-
     private final JwtService jwtService;
 
     public JwtRequestFilter(JwtService jwtService, UserDetailsService udService) {
@@ -28,8 +27,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         this.userDetailsService = udService;
     }
 
-    @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest
+
+    protected @Override void doFilterInternal(@NonNull HttpServletRequest
                                             request,
                                     @NonNull HttpServletResponse
                                             response,
@@ -62,4 +61,5 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
 }

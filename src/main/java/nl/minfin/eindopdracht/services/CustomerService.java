@@ -1,7 +1,7 @@
 package nl.minfin.eindopdracht.services;
 
 import nl.minfin.eindopdracht.objects.models.Customer;
-import nl.minfin.eindopdracht.objects.exceptions.CustomerNotFoundException;
+import nl.minfin.eindopdracht.objects.exceptions.CustomerNotExistsException;
 import nl.minfin.eindopdracht.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class CustomerService {
      * Will throw exception if the customer id doesnt exist.
      */
     public Customer getCustomerById(Long customerId) {
-        return customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException(customerId));
+        return customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotExistsException(customerId));
     }
 
     // Returns a list of customers by name.
@@ -61,7 +61,7 @@ public class CustomerService {
 
                     return customerRepository.save(customer);
                 })
-                .orElseThrow(() -> new CustomerNotFoundException(customerId));
+                .orElseThrow(() -> new CustomerNotExistsException(customerId));
     }
 
     /*
@@ -73,7 +73,7 @@ public class CustomerService {
         if (customerRepository.findById(customerId).isPresent()) {
             customerRepository.deleteById(customerId);
         } else {
-            throw new CustomerNotFoundException(customerId);
+            throw new CustomerNotExistsException(customerId);
         }
     }
 }

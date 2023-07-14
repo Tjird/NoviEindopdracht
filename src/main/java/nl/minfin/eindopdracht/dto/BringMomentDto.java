@@ -5,7 +5,6 @@ import java.sql.Date;
 public class BringMomentDto {
 
     public Date bringDate;
-
     public Long customerId;
 
 }

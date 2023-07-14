@@ -15,8 +15,8 @@ public class EmployeesDetailsService implements UserDetailsService {
     public EmployeesDetailsService(EmployeesRepository repos) {
         this.employeesRepos = repos;
     }
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+    public @Override UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Employee> oe = Optional.ofNullable(employeesRepos.findByUsername(username));
         if (oe.isPresent()) {
             Employee employee = oe.get();
