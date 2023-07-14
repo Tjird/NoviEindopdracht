@@ -40,6 +40,8 @@ public class LoadDatabase {
                     log.info("Nieuwe medewerker aan het opslaan in de database, " + repository.save(new Employee(username, password, fullName, role)));
                 }
             }
+
+
         };
     }
 

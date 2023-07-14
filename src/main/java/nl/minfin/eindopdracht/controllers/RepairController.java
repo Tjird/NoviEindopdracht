@@ -1,8 +1,6 @@
 package nl.minfin.eindopdracht.controllers;
 
-import nl.minfin.eindopdracht.dto.BringMomentDto;
-import nl.minfin.eindopdracht.dto.ProblemsFoundDto;
-import nl.minfin.eindopdracht.dto.RepairDateDto;
+import nl.minfin.eindopdracht.dto.*;
 import nl.minfin.eindopdracht.objects.models.Repair;
 import nl.minfin.eindopdracht.services.RepairService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +50,17 @@ public class RepairController {
     @GetMapping("{repairId}/getReceipt")
     String getReceiptFromRepair(@PathVariable long repairId) { return repairService.getReceipt(repairId); }
 
+    @PutMapping("/{repairId}/setPerformedTasks")
+    Repair setPerformedTasks(@PathVariable long repairId, @RequestBody PerformedTasksDto performedTasksDto) {
+        return repairService.setPerformedTasks(repairId, performedTasksDto);
+    }
 
+    @PutMapping("/{repairId}/setMiscTask")
+    Repair setMiscTask(@PathVariable long repairId, @RequestBody MiscTaskDto miscTaskDto) {
+        return repairService.setMiscTask(repairId, miscTaskDto);
+    }
+
+    @DeleteMapping("/{repairId}/delete")
+    void deleteRepair(@PathVariable long repairId) { repairService.deleteRepair(repairId); }
 
 }

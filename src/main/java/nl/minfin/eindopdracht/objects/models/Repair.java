@@ -35,8 +35,8 @@ public class Repair {
     private @Column java.sql.Date repairDate;
     private @Column Boolean customerAgreed;
     private @Column Date pickupDate;
-    private @Column String partsUsed;
-    private @Column double otherActionsPrice;
+    private @Column String tasksPerformed;
+    private @Column double miscellaneousTaskPrice;
     private @Column RepairStatus completed;
     private @Column Boolean called;
     private @Column Boolean paid;
@@ -50,33 +50,32 @@ public class Repair {
         this.paid = false;
     }
 
-    // partsUsed is stored as a string so it can be stored in one row of a database table.
-    public void setPartsUsed(List<Long> partsList) {
-        if (partsList != null) {
-            String parts = "";
+    public void setPerformedTasks(List<Integer> tasksPerformed) {
+        if (tasksPerformed != null) {
+            String tasks = "";
 
-            for (int i = 0; i < partsList.size(); i++) {
-                parts += partsList.get(i);
+            for (int i = 0; i < tasksPerformed.size(); i++) {
+                tasks += tasksPerformed.get(i);
 
-                if (i != partsList.size() - 1) {
-                    parts += ",";
+                if (i != tasksPerformed.size() - 1) {
+                    tasks += ", ";
                 }
             }
 
-            this.partsUsed = parts;
+            this.tasksPerformed = tasks;
         }
     }
 
-    public List<Long> getPartsUsed() {
-        if (partsUsed != null) {
-            String[] partsSplit = this.partsUsed.split(",");
-            List<Long> partsUsedList = new ArrayList<Long>();
+    public List<Integer> getPerformedTasks() {
+        if (tasksPerformed != null) {
+            String[] tasksSplit = this.tasksPerformed.split(", ");
+            List<Integer> tasksPerformedList = new ArrayList<Integer>();
 
-            for (String s : partsSplit) {
-                partsUsedList.add(Long.parseLong(s));
+            for (String s : tasksSplit) {
+                tasksPerformedList.add(Integer.parseInt(s));
             }
 
-            return partsUsedList;
+            return tasksPerformedList;
         } else {
             return null;
         }

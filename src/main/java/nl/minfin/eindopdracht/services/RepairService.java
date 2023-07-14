@@ -1,13 +1,17 @@
 package nl.minfin.eindopdracht.services;
 
 import nl.minfin.eindopdracht.dto.BringMomentDto;
+import nl.minfin.eindopdracht.dto.MiscTaskDto;
+import nl.minfin.eindopdracht.dto.PerformedTasksDto;
+import nl.minfin.eindopdracht.objects.enums.InventoryType;
 import nl.minfin.eindopdracht.objects.models.Customer;
+import nl.minfin.eindopdracht.objects.models.InventoryItem;
 import nl.minfin.eindopdracht.objects.models.Repair;
 import nl.minfin.eindopdracht.objects.exceptions.*;
 import nl.minfin.eindopdracht.objects.exceptions.FileNotFoundException;
 import nl.minfin.eindopdracht.objects.models.File;
 import nl.minfin.eindopdracht.objects.enums.RepairStatus;
-import nl.minfin.eindopdracht.repositories.CostItemRepository;
+import nl.minfin.eindopdracht.repositories.InventoryItemRepository;
 import nl.minfin.eindopdracht.repositories.CustomerRepository;
 import nl.minfin.eindopdracht.repositories.FileRepository;
 import nl.minfin.eindopdracht.repositories.RepairRepository;
@@ -30,7 +34,7 @@ public class RepairService {
 
     private @Autowired RepairRepository repairRepository;
     private @Autowired CustomerRepository customerRepository;
-    private @Autowired CostItemRepository costItemRepository;
+    private @Autowired InventoryItemRepository inventoryItemRepository;
     private @Autowired FileRepository fileRepository;
 
     public List<Repair> getAllRepairs() {
@@ -127,7 +131,7 @@ public class RepairService {
 
         if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
         if (repairDate == null) throw new IncorrectSyntaxException("repairDate");
-        if (repair.get().getProblemsFound() == null) throw new PreviousStepUncompletedException("set found problems");
+        if (repair.get().getProblemsFound() == null) throw new PreviousStepNotCompletedException("set found problems");
         if (!repair.get().getCustomerAgreed()) throw new CustomerNotAgreedException();
 
         repair.get().setCustomerAgreed(true);
@@ -157,17 +161,68 @@ public class RepairService {
 
         receipt += "Klantnummer: " + repair.get().getCustomer().getCustomerId();
         receipt += "Kenteken: " + repair.get().getCustomer().getLicensePlate();
+        receipt += "Taken uitgevoerd: \n";
+        receipt += "\nKeuring   €" + total;
 
-        if (repair.get().getCompleted() == RepairStatus.CANCELED && !repair.get().getCustomerAgreed()) {
-            receipt += "\nAlleen keuring          " + total;
-        } else {
+        if (repair.get().getCompleted() != RepairStatus.CANCELED && repair.get().getCustomerAgreed()) {
+            for (Integer id : repair.get().getPerformedTasks()) {
+                InventoryItem inventoryItem = inventoryItemRepository.findInventoryItemByInventoryItemId(id);
 
+                receipt += "\n" + inventoryItem.getName() + "   €" + inventoryItem.getCost();
+                total += inventoryItem.getCost();
+            }
         }
 
-        receipt += "\n=-=-=-=-=-=-=-=-=-=\n";
+        receipt += "\n\n=-=-=-=-=-=-=-=-=-=\n\n";
         receipt += "Totaal exc: €" + total + " | Totaal inc: €" + (total + (total*tax));
 
         return receipt;
 
     }
+
+    public Repair setPerformedTasks(Long repairId, PerformedTasksDto performedTasksDto) {
+        if (performedTasksDto.performedTasks == null) throw new IncorrectSyntaxException("set:PerformedTasks");
+
+        List<Integer> performedTasks = performedTasksDto.performedTasks;
+        for (int inventoryItemId : performedTasks) {
+            inventoryItemRepository.findById(inventoryItemId).map(inventoryItem -> {
+                if (inventoryItem.getInventoryType() == InventoryType.CAR_PART && inventoryItem.getStock() <= 0) {
+                    throw new ItemNoStockException(inventoryItemId);
+                } else if (inventoryItem.getInventoryType() == InventoryType.CAR_PART) {
+                    inventoryItem.setStock(inventoryItem.getStock() - 1);
+                }
+
+                return inventoryItemRepository.save(inventoryItem);
+            }).orElseThrow(() -> new InventoryItemNotExistsException(inventoryItemId));
+        }
+
+        if (performedTasks.isEmpty()) performedTasks.add(-1);
+
+        Optional<Repair> repair = repairRepository.findById(repairId);
+
+        if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
+        if (repair.get().getCustomerAgreed() == null) throw new PreviousStepNotCompletedException("set repair date (if customer agrees)");
+        if (!repair.get().getCustomerAgreed()) throw new CustomerNotAgreedException();
+
+        repair.get().setPerformedTasks(performedTasks);
+        return repairRepository.save(repair.get());
+    }
+
+    public Repair setMiscTask(Long repairId, MiscTaskDto miscTaskDto) {
+        Optional<Repair> repair = repairRepository.findById(repairId);
+
+        if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
+
+        repair.get().setMiscellaneousTaskPrice(miscTaskDto.price);
+        return repairRepository.save(repair.get());
+    }
+
+    public void deleteRepair(Long repairId) {
+        Optional<Repair> repair = repairRepository.findById(repairId);
+
+        if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
+
+        repairRepository.deleteById(repairId);
+    }
+
 }

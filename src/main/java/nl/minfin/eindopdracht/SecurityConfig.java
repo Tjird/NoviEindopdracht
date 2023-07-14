@@ -49,7 +49,9 @@ public class SecurityConfig {
         http
                 .httpBasic().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/employees**").hasAuthority("ADMIN")
+                .requestMatchers("/api/employees").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/repairs/**/getReceipt").hasAuthority("CASHIER")
+                .requestMatchers(HttpMethod.GET, "/api/actions/**/getReceipt").hasAuthority("BACKOFFICE")
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                 .requestMatchers("/**").authenticated()
                 .anyRequest().denyAll()
