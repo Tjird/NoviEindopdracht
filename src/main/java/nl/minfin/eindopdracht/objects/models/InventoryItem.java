@@ -5,28 +5,28 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nl.minfin.eindopdracht.objects.enums.CostType;
+import nl.minfin.eindopdracht.objects.enums.InventoryType;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "costitems")
-public class CostItem implements Comparable<CostItem> {
+@Table(name = "inventory")
+public class InventoryItem implements Comparable<InventoryItem> {
 
-    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long costItemId;
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long inventoryItemId;
     private @Column String name;
     private @Column double cost;
     private @Column int stock;
-    private @Column CostType costType;
+    private @Column InventoryType inventoryType;
 
-    public CostItem(String name, double cost, CostType costType) {
+    public InventoryItem(String name, double cost, InventoryType inventoryType) {
         this.name = name;
         this.cost = cost;
-        this.costType = costType;
+        this.inventoryType = inventoryType;
 
-        if (costType == CostType.PART) {
+        if (inventoryType == InventoryType.CAR_PART) {
             this.stock = 0;
         } else {
             this.stock = -1;
@@ -34,10 +34,10 @@ public class CostItem implements Comparable<CostItem> {
     }
 
     @Override
-    public int compareTo(CostItem other) {
-        if (this.getCostType() == CostType.PART && other.getCostType() == CostType.ACTION) {
+    public int compareTo(InventoryItem other) {
+        if (this.getInventoryType() == InventoryType.CAR_PART && other.getInventoryType() == InventoryType.MANUAL_ACTION) {
             return -1;
-        } else if (this.getCostType() == CostType.ACTION && other.getCostType() == CostType.PART) {
+        } else if (this.getInventoryType() == InventoryType.MANUAL_ACTION && other.getInventoryType() == InventoryType.CAR_PART) {
             return 1;
         } else {
             if (this.getName().compareTo(other.getName()) < 0) {
