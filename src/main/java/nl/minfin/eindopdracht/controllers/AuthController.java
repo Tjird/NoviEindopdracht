@@ -25,6 +25,7 @@ public class AuthController {
         this.jwtService = service;
     }
 
+    // Endpoint voor de authenticatie van de gebruiker, dit om een JWT token terug te krijgen.
     @PostMapping("/auth")
     public ResponseEntity<Object> signIn(@RequestBody AuthDto authDto) {
             UsernamePasswordAuthenticationToken up =

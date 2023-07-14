@@ -19,13 +19,7 @@ public class InventoryItemService {
 
     private @Autowired InventoryItemRepository inventoryItemRepository;
 
-    public InventoryItem getInventoryItemById(int inventoryItemId) {
-        Optional<InventoryItem> inventoryItem = inventoryItemRepository.findById(inventoryItemId);
-
-        if (inventoryItem.isEmpty()) throw new InventoryItemNotExistsException(inventoryItemId);
-
-        return inventoryItem.get();
-    }
+    // Verkrijg alle inventory items uit de database in een lijst
     public List<InventoryItem> getAllInventoryItems() {
         List<InventoryItem> inventoryItems = inventoryItemRepository.findAll();
 
@@ -33,9 +27,11 @@ public class InventoryItemService {
         return inventoryItems;
     }
 
+    // Maak een nieuw inventory item aan
     public InventoryItem createInventoryItem(InventoryItemAddedDto inventoryItemAddedDto) {
         List<InventoryItem> inventoryItems = this.getAllInventoryItems();
 
+        // Bekijk of een item met de naam al bestaat in de database
         if (inventoryItems.stream().anyMatch(inventoryItem -> inventoryItemAddedDto.name.equals(inventoryItem.getName()))) {
             throw new InventoryItemExistsException(inventoryItemAddedDto.name);
         }
@@ -46,9 +42,11 @@ public class InventoryItemService {
         return inventoryItemRepository.save(inventoryItem);
     }
 
+    // Pas een inventory item aan
     public InventoryItem editInventoryItem(int inventoryItemId, InventoryItemDto newInventoryItem) {
         Optional<InventoryItem> inventoryItem = inventoryItemRepository.findById(inventoryItemId);
 
+        // Bekijk of het item wel bestaat, zo nee word een expection afgevuurd.
         if (inventoryItem.isEmpty()) throw new InventoryItemNotExistsException(inventoryItemId);
 
         if (newInventoryItem.inventoryType == InventoryType.MANUAL_ACTION) inventoryItem.get().setStock(-1);

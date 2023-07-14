@@ -37,10 +37,6 @@ public class RepairService {
     private @Autowired InventoryItemRepository inventoryItemRepository;
     private @Autowired FileRepository fileRepository;
 
-    public List<Repair> getAllRepairs() {
-        return repairRepository.findAll();
-    }
-
     public Repair createRepair(BringMomentDto bringMoment) {
         Optional<Customer> customer = customerRepository.findById(bringMoment.customerId);
 
@@ -223,6 +219,24 @@ public class RepairService {
         if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
 
         repairRepository.deleteById(repairId);
+    }
+
+    public Repair setRepairToCompleted(Long repairId) {
+        Optional<Repair> repair = repairRepository.findById(repairId);
+
+        if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
+
+        repair.get().setCompleted(RepairStatus.COMPLETED);
+        return repairRepository.save(repair.get());
+    }
+
+    public Repair setRepairToPaid(Long repairId) {
+        Optional<Repair> repair = repairRepository.findById(repairId);
+
+        if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
+
+        repair.get().setPaid(true);
+        return repairRepository.save(repair.get());
     }
 
 }
