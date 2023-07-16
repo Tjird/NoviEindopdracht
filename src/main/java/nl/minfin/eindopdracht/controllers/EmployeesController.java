@@ -13,7 +13,8 @@ import java.util.List;
 @RequestMapping("/api/employees")
 public class EmployeesController {
 
-    private @Autowired EmployeesService employeesService;
+    @Autowired
+    private EmployeesService employeesService;
 
     // Endpoint om alle medewerkers weer te geven, deze is beveiligd voor alleen de ADMIN role
     @GetMapping()

@@ -17,7 +17,7 @@ public class File {
 
     private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long fileId;
     private @JsonIgnore @OneToOne(mappedBy = "file", orphanRemoval = true) Repair repair;
-    private @Lob byte[] content;
+    private @Lob @Column(columnDefinition = "longblob") byte[] content;
     private String name;
 
     public File(byte[] content, String name) {

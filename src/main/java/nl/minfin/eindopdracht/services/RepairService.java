@@ -45,7 +45,7 @@ public class RepairService {
         Repair repair = new Repair(customerRepository.findById(bringMoment.customerId).get(),
                 bringMoment.bringDate);
 
-        if (repair.getRepairDate() == null) throw new IncorrectSyntaxException("repairDate");
+        if (repair.getBringDate() == null) throw new IncorrectSyntaxException("bringDate");
 
         return repairRepository.save(repair);
     }
@@ -110,7 +110,7 @@ public class RepairService {
         String problemsFoundString = String.join(", ", foundProblems);
 
         repair.get().setProblemsFound(problemsFoundString);
-        return repair.get();
+        return repairRepository.save(repair.get());
     }
 
     public Repair setAgreed(Long repairId) {
@@ -119,7 +119,7 @@ public class RepairService {
         if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
 
         repair.get().setCustomerAgreed(true);
-        return repair.get();
+        return repairRepository.save(repair.get());
     }
 
     public Repair setRepairDate(Long repairId, java.sql.Date repairDate) {
@@ -155,8 +155,8 @@ public class RepairService {
         if (repair.isEmpty()) throw new RepairNotExistsException(repairId);
 
         receipt.append("Klantnummer: ").append(repair.get().getCustomer().getCustomerId());
-        receipt.append("Kenteken: ").append(repair.get().getCustomer().getLicensePlate());
-        receipt.append("Taken uitgevoerd: \n");
+        receipt.append("\nKenteken: ").append(repair.get().getCustomer().getLicensePlate());
+        receipt.append("\nTaken uitgevoerd: \n");
         receipt.append("\nKeuring   €").append(total);
 
         if (repair.get().getCompleted() != RepairStatus.CANCELED && repair.get().getCustomerAgreed()) {

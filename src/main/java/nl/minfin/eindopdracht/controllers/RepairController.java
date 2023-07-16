@@ -24,7 +24,7 @@ public class RepairController {
 
     // Endpoint om een bestand toe te voegen aan een reparatie
     @PutMapping(path = "/files/{repairId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Repair addFilesToRepair(@PathVariable long repairId, @RequestPart MultipartFile uploadedFile) {
+    Repair addFilesToRepair(@PathVariable long repairId, @RequestPart("file") MultipartFile uploadedFile) {
         return repairService.uploadFile(repairId, uploadedFile);
     }
 

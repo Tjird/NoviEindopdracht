@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/employees").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/repairs/**/getReceipt").hasAuthority("CASHIER")
+//                .requestMatchers(HttpMethod.GET, "/api/repairs/**/getReceipt").hasAuthority("CASHIER")
                 .requestMatchers(HttpMethod.POST, "/api/inventory").hasAuthority("BACKOFFICE")
                 .requestMatchers(HttpMethod.PUT, "/api/inventory").hasAuthority("BACKOFFICE")
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
