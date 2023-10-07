@@ -34,4 +34,14 @@ public class CustomerController {
     @GetMapping
     Customer getCustomerById(@RequestBody CustomerIdDto customer) { return customerService.getCustomerById(customer.customerId); }
 
+    @PutMapping("/edit/{customerID}")
+    Customer editCustomerById(@RequestBody CustomerDto customer, @PathVariable Integer customerID) {
+        return customerService.editCustomer(customer, customerID);
+    }
+
+    @DeleteMapping()
+    void deleteCustomer (@RequestBody CustomerIdDto customerIdDto) {
+        customerService.deleteCustomer(customerIdDto);
+    }
+
 }

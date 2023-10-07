@@ -53,11 +53,10 @@ public class SecurityConfig {
 //                .requestMatchers(HttpMethod.GET, "/api/repairs/**/getReceipt").hasAuthority("CASHIER")
                 .requestMatchers(HttpMethod.POST, "/api/inventory").hasAuthority("BACKOFFICE")
                 .requestMatchers(HttpMethod.PUT, "/api/inventory").hasAuthority("BACKOFFICE")
+                .requestMatchers(HttpMethod.DELETE, "/api/inventory").hasAuthority("BACKOFFICE")
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                 .requestMatchers("/**").authenticated()
                 .anyRequest().denyAll()
-                .and()
-                .formLogin()
                 .and()
                 .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
 

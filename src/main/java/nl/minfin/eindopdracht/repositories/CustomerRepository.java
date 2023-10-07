@@ -13,6 +13,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     List<Customer> findCustomersByName(@Param("name")String name);
     List<Customer> findCustomersByLicensePlate(@Param("license_plate")String licensePlate);
     List<Customer> findCustomersByTelephoneNumber(@Param("telephone_number")String telephoneNumber);
+    Customer deleteCustomerByCustomerId(@Param("id")Long customerId);
 
 }
 

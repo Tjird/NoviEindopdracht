@@ -1,6 +1,7 @@
 package nl.minfin.eindopdracht.services;
 
 import nl.minfin.eindopdracht.dto.CustomerDto;
+import nl.minfin.eindopdracht.dto.CustomerIdDto;
 import nl.minfin.eindopdracht.objects.exceptions.CustomerExistsException;
 import nl.minfin.eindopdracht.objects.exceptions.IncorrectSyntaxException;
 import nl.minfin.eindopdracht.objects.models.Customer;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -37,6 +39,32 @@ public class CustomerService {
         else if (telephoneList.size() > 0) throw new CustomerExistsException("telephone_number", telephoneList.get(0).getTelephoneNumber());
 
         return customerRepository.save(new Customer(newCustomer.customerName, newCustomer.telephoneNumber, newCustomer.licensePlate));
+    }
+
+    public Customer editCustomer(CustomerDto customer, Integer customerId) {
+        Optional<Customer> existingCustomer = customerRepository.findById(Long.valueOf(customerId));
+
+        if (existingCustomer.isEmpty()) throw new CustomerNotExistsException(Long.valueOf(customerId));
+
+        if (customer.customerName == null || customer.telephoneNumber == null || customer.licensePlate ==  null) throw new IncorrectSyntaxException("NewCustomer");
+
+        List<Customer> licensePlateList = customerRepository.findCustomersByLicensePlate(customer.licensePlate);
+        List<Customer> telephoneList = customerRepository.findCustomersByTelephoneNumber(customer.telephoneNumber);
+
+        if (licensePlateList.size() > 0) throw new CustomerExistsException("license_plate", licensePlateList.get(0).getLicensePlate());
+        else if (telephoneList.size() > 0) throw new CustomerExistsException("telephone_number", telephoneList.get(0).getTelephoneNumber());
+
+        Customer editedCustomer = existingCustomer.get();
+
+        editedCustomer.setName(customer.customerName);
+        editedCustomer.setLicensePlate(customer.licensePlate);
+        editedCustomer.setTelephoneNumber(customer.telephoneNumber);
+
+        return customerRepository.save(editedCustomer);
+    }
+
+    public void deleteCustomer(CustomerIdDto customerIdDto) {
+        customerRepository.deleteCustomerByCustomerId(customerIdDto.customerId);
     }
 
 }
