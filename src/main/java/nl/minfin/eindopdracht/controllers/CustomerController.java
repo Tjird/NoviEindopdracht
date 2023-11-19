@@ -6,6 +6,7 @@ import nl.minfin.eindopdracht.dto.CustomerNameDto;
 import nl.minfin.eindopdracht.objects.models.Customer;
 import nl.minfin.eindopdracht.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +15,7 @@ import java.util.List;
 @RequestMapping("/api/customer")
 public class CustomerController {
 
-    @Autowired
-    private CustomerService customerService;
+    private @Autowired CustomerService customerService;
 
     // Endpoint om klanten te vinden op naam, dit returnt een lijst met klanten
     @GetMapping("/name")

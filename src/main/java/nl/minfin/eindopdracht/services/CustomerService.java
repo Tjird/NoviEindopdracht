@@ -20,7 +20,13 @@ public class CustomerService {
 
     // Verkrijg een klant op basis van het Id
     public Customer getCustomerById(Long customerId) {
-        return customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotExistsException(customerId));
+        try {
+            return customerRepository.findById(customerId).get();
+        } catch (NullPointerException e) {
+//            throw new CustomerNotExistsException(customerId);
+            return null;
+        }
+        //return customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotExistsException(customerId));
     }
 
     // Verkrijg een lijst met klanten op basis van de naam

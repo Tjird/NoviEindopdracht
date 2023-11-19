@@ -1,55 +1,87 @@
 package nl.minfin.eindopdracht.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import nl.minfin.eindopdracht.dto.AuthDto;
+import nl.minfin.eindopdracht.dto.EmployeeDto;
 import nl.minfin.eindopdracht.objects.enums.Role;
-import nl.minfin.eindopdracht.objects.enums.Roles;
-import nl.minfin.eindopdracht.objects.models.Employee;
-import nl.minfin.eindopdracht.services.JwtService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.Charset;
 
-@WebMvcTest(EmployeesController.class)
-@ActiveProfiles("test")
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(username = "admin", password = "admin", authorities = {Roles.ADMIN})
+@ActiveProfiles("test")
 class EmployeesControllerTest {
 
-    private @Autowired MockMvc mockMvc;
-    private @MockBean JwtService jwtService;
-    private @MockBean JdbcTemplate jdbcTemplate;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @AfterEach
-    void tearDown() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "employees");
+    public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
+
+    MvcResult result;
+    String token;
+
+    EmployeeDto employeeDto;
+
+    @BeforeEach
+    void setUp() throws Exception {
+
+        AuthDto authDto = new AuthDto();
+        authDto.username = "admin";
+        authDto.password = "admin";
+
+        result = mockMvc.perform(
+                post("/auth").contentType(APPLICATION_JSON_UTF8).content(asJsonString(authDto))
+        ).andReturn();
+
+        token = result.getResponse().getHeader("Authorization");
     }
 
     @Test
-    void getAllEmployees() {
-
+    void getAllEmployees() throws Exception {
+        mockMvc.perform(get("/api/employees").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(4)));
     }
 
-    private List<Employee> initTest() {
-        Employee emp1 = new Employee("username1", "pass1", "Tjeerd Rutte", Role.MECHANIC);
-        Employee emp2 = new Employee("username2", "pass2", "Marc Rutte", Role.BACKOFFICE);
-        Employee emp3 = new Employee("username3", "pass3", "Tjeerd Samson", Role.CASHIER);
-        Employee emp4 = new Employee();
-        Employee emp5 = new Employee();
+    @Test
+    void createEmployee() throws Exception {
+        employeeDto = new EmployeeDto();
+        employeeDto.username = "karel";
+        employeeDto.password = "k@r3ll1!";
+        employeeDto.fullName = "Karel Hansen";
+        employeeDto.role = Role.MECHANIC;
 
-        emp4.setUsername("username4");
-        emp5.setRole(Role.ADMIN);
+        mockMvc.perform(post("/api/employees").header("Authorization", token).contentType(APPLICATION_JSON_UTF8).content(asJsonString(employeeDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("employeeId").value(5))
+                .andExpect(jsonPath("username").value(employeeDto.username))
+                .andExpect(jsonPath("password").value(employeeDto.password))
+                .andExpect(jsonPath("fullName").value(employeeDto.fullName))
+                .andExpect(jsonPath("role").value(employeeDto.role.toString()));
+    }
 
-        return new ArrayList<>(List.of(emp1, emp2, emp3, emp4, emp5));
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

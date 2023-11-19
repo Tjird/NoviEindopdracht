@@ -33,6 +33,19 @@ public class InventoryItem implements Comparable<InventoryItem> {
         }
     }
 
+    public InventoryItem(Long Id, String name, double cost, InventoryType inventoryType) {
+        this.inventoryItemId = Id;
+        this.name = name;
+        this.cost = cost;
+        this.inventoryType = inventoryType;
+
+        if (inventoryType == InventoryType.CAR_PART) {
+            this.stock = 0;
+        } else {
+            this.stock = -1;
+        }
+    }
+
     @Override
     public int compareTo(InventoryItem other) {
         if (this.getInventoryType() == InventoryType.CAR_PART && other.getInventoryType() == InventoryType.MANUAL_ACTION) {

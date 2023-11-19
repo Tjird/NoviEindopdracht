@@ -10,7 +10,7 @@ public class EmployeeDto {
     @NotEmpty
     public String username;
 
-    @Size(min = 6, message = "Wachtwoord moet minimaal 6 karakters lang zijn")
+    @Size(min = 5, message = "Wachtwoord moet minimaal 5 karakters lang zijn")
     @NotEmpty
     public String password;
 
